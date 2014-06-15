@@ -1,11 +1,3 @@
-Analysis of Personal Movement Data
-===================================
-
-The data in this report is derived from an unnamed individual's movement as tracked by a personal movement device.  The data is contained in the .csv file "activity".  It consists of data collected at 5 minute intervals over a two month period. The data measures number of steps by day and five minute interval during the day
-
-Firstly we read the data, calculate the daily mean and median for the data and produce a histogram of activity by day.
-
-```{r}
 
 ## Load data
 
@@ -32,14 +24,6 @@ median <- median(a)
 y <- seq(as.Date("2012/10/01"), as.Date("2012/11/30"), by="day")
 hist <- data.frame(cbind(y,a))
 plot(y,a,type="h",xlab="Date",ylab="Steps",main="Number of Steps by Day",col="red",lwd=8)
-```
-
-The mean of the data is `r mean` and the median is `r median`.  The data shows that October and November appear to be more active than November but there are many missing values and "0"s returned.
-
-The plot of acivity over an average day shows that activity peaks in the morning.
-
-```{r}
-
 
 ##plot average number of steps by time interval and max val
 
@@ -66,25 +50,14 @@ maxsegments <- hist[,2]==max(x)
 maxsegments1 <- hist[maxsegments,]
 maximumInterval <- maxsegments1[[1]]
 
-```
-
-The peak 5 minute period is the`r maximumInterval`th in the day.
-To compute the number of missing values
-
-```{r}
 ##Calculating number of missing values
 
 data <- read.csv("activity.csv")
 complete <- complete.cases(data)
 NAcases <- data[!complete,]
 numberNA <- nrow(NAcases)
-```
 
-The number of missing values is `r numberNA`
-
-The missing values are replaced by the average number of steps in a five minute interval for the day.
-
-```{r}
+##Replace missing values
 
 data <- read.csv("activity.csv")
 data$date <- unclass(as.Date(data$date,format="%Y-%m-%d"))
@@ -103,10 +76,8 @@ for(i in id){
 adjdata$date <- as.Date(adjdata$date,origin="1970-01-01")
 Daysweek <- weekdays(adjdata$date)
 Daysweek1 <- cbind(adjdata,Daysweek)
-```
-The next step is to plot the number of steps by day having added back the average values where missing
 
-```{r}
+##plot the total number of steps per day and report new mean and median
 newmean <- 24*12*mean(Daysweek1$steps,na.rm=T)
 Daysweek1$date <- unclass(as.Date(Daysweek1$date,format="%Y-%m-%d"))  ## Change Date to datetime format
 id=15614:15674
@@ -122,7 +93,17 @@ w <- seq(as.Date("2012/10/01"), as.Date("2012/11/30"), by="day")
 hist <- data.frame(cbind(w,v))
 plot(w,v,type="h",xlab="Date",ylab="Steps",main="Number of Steps by Day (Adjusted)",col="black",lwd=8)
 
-```
+##Number of steps by time interval split weekday, weekend
 
-The new mean is `r newmean` and the new median is `r median`.  The newmedian is unchanged from the original median because of the method used to replace the missing values but the mean is lower
+Daysweek1seg <- Daysweek1[,4]=="Saturday"
+Daysweek1seg1 <- Daysweek1[Daysweek1seg,]
+Daysweek2seg <- Daysweek1[,4]=="Sunday"
+Daysweek2seg1 <- Daysweek1[Daysweek2seg,]
+Weekends <- rbind(Daysweek1seg1,Daysweek2seg1)
 
+Daysweek3seg1 <- Daysweek1[!Daysweek1seg,]
+Weekdays <- Daysweek3seg1[!Daysweek2seg,]
+
+
+
+library(lattice)

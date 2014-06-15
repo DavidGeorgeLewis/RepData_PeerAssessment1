@@ -5,8 +5,8 @@ The data in this report is derived from an unnamed individual's movement as trac
 
 Firstly we read the data, calculate the daily mean and median for the data and produce a histogram of activity by day.
 
-```{r}
 
+```r
 ## Load data
 
 data <- read.csv("activity.csv")
@@ -34,13 +34,14 @@ hist <- data.frame(cbind(y,a))
 plot(y,a,type="h",xlab="Date",ylab="Steps",main="Number of Steps by Day",col="red",lwd=8)
 ```
 
-The mean of the data is `r mean` and the median is `r median`.  The data shows that October and November appear to be more active than November but there are many missing values and "0"s returned.
+![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1.png) 
+
+The mean of the data is 1.0766 &times; 10<sup>4</sup> and the median is 1.0395 &times; 10<sup>4</sup>.  The data shows that October and November appear to be more active than November but there are many missing values and "0"s returned.
 
 The plot of acivity over an average day shows that activity peaks in the morning.
 
-```{r}
 
-
+```r
 ##plot average number of steps by time interval and max val
 
 data <- read.csv("activity.csv")
@@ -60,18 +61,21 @@ x <- x[!p]
 u <- 0:(length(x)-1)
 hist <- data.frame(cbind(u,x))
 plot(u,x,type="l",xlab="Time Interval (hours)",ylab="Steps",main="Average Number of Steps by Time Interval",col="blue",lwd=2)
+```
 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
 
+```r
 maxsegments <- hist[,2]==max(x)
 maxsegments1 <- hist[maxsegments,]
 maximumInterval <- maxsegments1[[1]]
-
 ```
 
-The peak 5 minute period is the`r maximumInterval`th in the day.
+The peak 5 minute period is the103th in the day.
 To compute the number of missing values
 
-```{r}
+
+```r
 ##Calculating number of missing values
 
 data <- read.csv("activity.csv")
@@ -80,12 +84,12 @@ NAcases <- data[!complete,]
 numberNA <- nrow(NAcases)
 ```
 
-The number of missing values is `r numberNA`
+The number of missing values is 2304
 
 The missing values are replaced by the average number of steps in a five minute interval for the day.
 
-```{r}
 
+```r
 data <- read.csv("activity.csv")
 data$date <- unclass(as.Date(data$date,format="%Y-%m-%d"))
 
@@ -106,7 +110,8 @@ Daysweek1 <- cbind(adjdata,Daysweek)
 ```
 The next step is to plot the number of steps by day having added back the average values where missing
 
-```{r}
+
+```r
 newmean <- 24*12*mean(Daysweek1$steps,na.rm=T)
 Daysweek1$date <- unclass(as.Date(Daysweek1$date,format="%Y-%m-%d"))  ## Change Date to datetime format
 id=15614:15674
@@ -121,8 +126,9 @@ newmedian <- median(v)
 w <- seq(as.Date("2012/10/01"), as.Date("2012/11/30"), by="day")
 hist <- data.frame(cbind(w,v))
 plot(w,v,type="h",xlab="Date",ylab="Steps",main="Number of Steps by Day (Adjusted)",col="black",lwd=8)
-
 ```
 
-The new mean is `r newmean` and the new median is `r median`.  The newmedian is unchanged from the original median because of the method used to replace the missing values but the mean is lower
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
+
+The new mean is 9354.2295 and the new median is 1.0395 &times; 10<sup>4</sup>.  The newmedian is unchanged from the original median because of the method used to replace the missing values but the mean is lower
 
